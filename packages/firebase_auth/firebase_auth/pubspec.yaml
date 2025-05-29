@@ -16,8 +16,8 @@ false_secrets:
   - example/**
 
 environment:
-  sdk: '>=3.2.0 <4.0.0'
-  flutter: '>=3.16.0'
+  sdk: ">=3.2.0 <4.0.0"
+  flutter: ">=3.16.0"
 
 dependencies:
   firebase_auth_platform_interface:
@@ -39,7 +39,7 @@ dependencies:
     git:
       url: https://github.com/carlosbatistadev/flutterfire.git
       path: packages/firebase_core/firebase_core_platform_interface
-      
+
   flutter:
     sdk: flutter
   meta: ^1.8.0
@@ -65,4 +65,3 @@ flutter:
         default_package: firebase_auth_web
       windows:
         pluginClass: FirebaseAuthPluginCApi
-
