@@ -10,7 +10,10 @@ environment:
   flutter: '>=3.3.0'
 
 dependencies:
-  _flutterfire_internals: ^1.3.55
+  _flutterfire_internals:
+    git:
+      url: https://github.com/carlosbatistadev/flutterfire.git
+      path: packages/_flutterfire_internals
   firebase_core:
     git:
       url: https://github.com/carlosbatistadev/flutterfire.git
