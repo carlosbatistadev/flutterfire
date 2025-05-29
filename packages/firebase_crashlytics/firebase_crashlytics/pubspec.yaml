@@ -19,9 +19,20 @@ environment:
   flutter: '>=3.3.0'
 
 dependencies:
-  firebase_core: ^3.13.1
-  firebase_core_platform_interface: ^5.3.1
-  firebase_crashlytics_platform_interface: ^3.8.6
+  firebase_core:
+    git:
+      url: https://github.com/carlosbatistadev/flutterfire.git
+      path: packages/firebase_core/firebase_core
+
+  firebase_core_platform_interface:
+    git:
+      url: https://github.com/carlosbatistadev/flutterfire.git
+      path: packages/firebase_core/firebase_core_platform_interface
+
+  firebase_crashlytics_platform_interface:
+    git:
+      url: https://github.com/carlosbatistadev/flutterfire.git
+      path: packages/firebase_crashlytics/firebase_crashlytics_platform_interface
   flutter:
     sdk: flutter
   stack_trace: ^1.10.0
