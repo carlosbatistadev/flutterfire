@@ -151,7 +151,7 @@ class FirestoreMessageCodec extends StandardMessageCodec {
         final FirebaseFirestorePlatform firestore =
             FirebaseFirestorePlatform.instanceFor(
                 app: app, databaseId: databaseId);
-        return firestore.doc(path);
+        return firestore.doc(path, null, null, null);
       case _kVectorValue:
         final List<Object?> vector = (readValue(buffer)!) as List<Object?>;
         final List<double> doubles = vector.map((e) => e! as double).toList();

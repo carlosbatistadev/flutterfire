@@ -185,7 +185,7 @@ class MethodChannelFirebaseFirestore extends FirebaseFirestorePlatform {
   }
 
   @override
-  DocumentReferencePlatform doc(String documentPath) {
+  DocumentReferencePlatform doc(String documentPath, String? apiKey, String? accessToken, String? projectId) {
     return MethodChannelDocumentReference(this, documentPath, pigeonApp);
   }
 

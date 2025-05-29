@@ -127,7 +127,7 @@ abstract class FirebaseFirestorePlatform extends PlatformInterface {
   }
 
   /// Gets a [DocumentReferencePlatform] for the specified Firestore path.
-  DocumentReferencePlatform doc(String documentPath) {
+  DocumentReferencePlatform doc(String documentPath, String? apiKey, String? accessToken, String? projectId) {
     throw UnimplementedError('doc() is not implemented');
   }
 

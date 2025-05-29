@@ -33,7 +33,7 @@ abstract class CollectionReferencePlatform extends QueryPlatform {
       return null;
     }
 
-    return firestore.doc(parentPath);
+    return firestore.doc(parentPath, null, null, null);
   }
 
   /// A string containing the slash-separated path to this [CollectionReferencePlatform]

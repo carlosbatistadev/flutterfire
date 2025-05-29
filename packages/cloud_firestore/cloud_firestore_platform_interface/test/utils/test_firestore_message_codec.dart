@@ -86,7 +86,7 @@ class TestFirestoreMessageCodec extends FirestoreMessageCodec {
         MethodChannelFirebaseFirestore firestore =
             readValue(buffer)! as MethodChannelFirebaseFirestore;
         String path = readValue(buffer)! as String;
-        return firestore.doc(path);
+        return firestore.doc(path, null, null, null);
       case _kFieldPath:
         final int size = readSize(buffer);
         final List<String> segments = <String>[];
