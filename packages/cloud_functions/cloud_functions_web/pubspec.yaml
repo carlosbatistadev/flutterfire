@@ -23,7 +23,7 @@ dependencies:
   firebase_core_web:
     git:
       url: https://github.com/carlosbatistadev/flutterfire.git
-      path: packages/firebase_core_web/firebase_core_web
+      path: packages/firebase_core/firebase_core_web
   flutter:
     sdk: flutter
   flutter_web_plugins:
