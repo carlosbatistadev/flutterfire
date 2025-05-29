@@ -89,8 +89,8 @@ class FirebaseFirestoreWeb extends FirebaseFirestorePlatform {
   }
 
   @override
-  DocumentReferencePlatform doc(String documentPath) =>
-      DocumentReferenceWeb(this, _delegate, documentPath);
+  DocumentReferencePlatform doc(String documentPath, String? apiKey, String? accessToken, String? projectId) =>
+      DocumentReferenceWeb(this, _delegate, documentPath, apiKey, accessToken);
 
   @override
   Future<void> enableNetwork() {

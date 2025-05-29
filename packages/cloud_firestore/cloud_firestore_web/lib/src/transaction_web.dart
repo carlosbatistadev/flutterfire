@@ -24,7 +24,7 @@ class TransactionWeb extends TransactionPlatform {
 
   @override
   TransactionWeb delete(String documentPath) {
-    _webTransactionDelegate.delete(_webFirestoreDelegate.doc(documentPath));
+    _webTransactionDelegate.delete(_webFirestoreDelegate.doc(documentPath, null, null));
     return this;
   }
 
@@ -33,7 +33,7 @@ class TransactionWeb extends TransactionPlatform {
     return convertWebExceptions(
       () async {
         final webDocumentSnapshot = await _webTransactionDelegate
-            .get(_webFirestoreDelegate.doc(documentPath));
+            .get(_webFirestoreDelegate.doc(documentPath, null, null));
         return convertWebDocumentSnapshot(
           _firestore,
           webDocumentSnapshot,
@@ -50,7 +50,7 @@ class TransactionWeb extends TransactionPlatform {
     SetOptions? options,
   ]) {
     _webTransactionDelegate.set(
-      _webFirestoreDelegate.doc(documentPath),
+      _webFirestoreDelegate.doc(documentPath, null, null),
       EncodeUtility.encodeMapData(data)!,
       convertSetOptions(options),
     );
@@ -63,7 +63,7 @@ class TransactionWeb extends TransactionPlatform {
     Map<String, dynamic> data,
   ) {
     _webTransactionDelegate.update(
-      _webFirestoreDelegate.doc(documentPath),
+      _webFirestoreDelegate.doc(documentPath, null, null),
       EncodeUtility.encodeMapData(data)!,
     );
     return this;

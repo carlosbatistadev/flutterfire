@@ -24,7 +24,9 @@ class DocumentReferenceWeb extends DocumentReferencePlatform {
     FirebaseFirestorePlatform firestore,
     this.firestoreWeb,
     String path,
-  )   : _delegate = firestoreWeb.doc(path),
+    String? apiKey,
+    String? accessToken,
+  )   : _delegate = firestoreWeb.doc(path, apiKey, accessToken),
         super(firestore, path);
 
   @override

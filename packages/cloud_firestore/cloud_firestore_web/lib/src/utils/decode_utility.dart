@@ -58,7 +58,7 @@ class DecodeUtility {
         value.instanceof(BytesConstructor as JSFunction)) {
       return Blob((value as BytesJsImpl).toUint8Array().toDart);
     } else if (value is firestore_interop.DocumentReference) {
-      return (firestore as FirebaseFirestoreWeb).doc(value.path);
+      return (firestore as FirebaseFirestoreWeb).doc(value.path, null, null, null);
     } else if (value is Map<String, dynamic>) {
       return decodeMapData(value, firestore);
     } else if (value is List<dynamic>) {

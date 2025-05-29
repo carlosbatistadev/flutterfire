@@ -83,7 +83,7 @@ class Firestore extends JsObjectWrapper<firestore_interop.FirestoreJsImpl> {
   Query collectionGroup(String collectionId) => Query.fromJsObject(
       firestore_interop.collectionGroup(jsObject, collectionId.toJS));
 
-  DocumentReference doc(String documentPath) => DocumentReference.getInstance(
+  DocumentReference doc(String documentPath, String? apiKey, String? accessToken) => DocumentReference.getInstance(
       firestore_interop.doc(jsObject as JSAny, documentPath.toJS));
 
   Future<void> enablePersistence(

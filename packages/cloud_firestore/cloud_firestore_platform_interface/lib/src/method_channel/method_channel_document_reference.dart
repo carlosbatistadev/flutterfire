@@ -39,8 +39,7 @@ class MethodChannelDocumentReference extends DocumentReferencePlatform {
           data: data,
           option: PigeonDocumentOption(
             merge: options?.merge,
-            mergeFields:
-                options?.mergeFields?.map((e) => e.components).toList(),
+            mergeFields: options?.mergeFields?.map((e) => e.components).toList(),
           ),
         ),
       );
@@ -52,8 +51,7 @@ class MethodChannelDocumentReference extends DocumentReferencePlatform {
   @override
   Future<void> update(Map<FieldPath, dynamic> data) async {
     try {
-      await MethodChannelFirebaseFirestore.pigeonChannel
-          .documentReferenceUpdate(
+      await MethodChannelFirebaseFirestore.pigeonChannel.documentReferenceUpdate(
         pigeonApp,
         DocumentReferenceRequest(
           path: _pointer.path,
@@ -66,17 +64,23 @@ class MethodChannelDocumentReference extends DocumentReferencePlatform {
   }
 
   @override
-  Future<DocumentSnapshotPlatform> get(
-      [GetOptions options = const GetOptions()]) async {
+  Future<DocumentSnapshotPlatform> get({
+    GetOptions options = const GetOptions(),
+    String? apiKey,
+    String? accessToken,
+    String? projectId,
+  }) async {
     try {
-      final result = await MethodChannelFirebaseFirestore.pigeonChannel
-          .documentReferenceGet(
+      final result = await MethodChannelFirebaseFirestore.pigeonChannel.documentReferenceGet(
         pigeonApp,
         DocumentReferenceRequest(
           path: _pointer.path,
           source: options.source,
           serverTimestampBehavior: options.serverTimestampBehavior,
         ),
+        apiKey,
+        accessToken,
+        projectId,
       );
 
       return DocumentSnapshotPlatform(
@@ -93,8 +97,7 @@ class MethodChannelDocumentReference extends DocumentReferencePlatform {
   @override
   Future<void> delete() async {
     try {
-      await MethodChannelFirebaseFirestore.pigeonChannel
-          .documentReferenceDelete(
+      await MethodChannelFirebaseFirestore.pigeonChannel.documentReferenceDelete(
         pigeonApp,
         DocumentReferenceRequest(
           path: _pointer.path,
@@ -108,20 +111,18 @@ class MethodChannelDocumentReference extends DocumentReferencePlatform {
   @override
   Stream<DocumentSnapshotPlatform> snapshots({
     bool includeMetadataChanges = false,
-    ServerTimestampBehavior serverTimestampBehavior =
-        ServerTimestampBehavior.none,
+    ServerTimestampBehavior serverTimestampBehavior = ServerTimestampBehavior.none,
     required ListenSource listenSource,
   }) {
     // It's fine to let the StreamController be garbage collected once all the
     // subscribers have cancelled; this analyzer warning is safe to ignore.
-    late StreamController<DocumentSnapshotPlatform>
-        controller; // ignore: close_sinks
+    late StreamController<DocumentSnapshotPlatform> controller; // ignore: close_sinks
 
     StreamSubscription<dynamic>? snapshotStreamSubscription;
     controller = StreamController<DocumentSnapshotPlatform>.broadcast(
       onListen: () async {
-        final observerId = await MethodChannelFirebaseFirestore.pigeonChannel
-            .documentReferenceSnapshot(
+        final observerId =
+            await MethodChannelFirebaseFirestore.pigeonChannel.documentReferenceSnapshot(
           pigeonApp,
           DocumentReferenceRequest(
             path: _pointer.path,
@@ -137,8 +138,7 @@ class MethodChannelDocumentReference extends DocumentReferencePlatform {
         )
                 .listen(
           (snapshot) {
-            final PigeonDocumentSnapshot result =
-                PigeonDocumentSnapshot.decode(snapshot);
+            final PigeonDocumentSnapshot result = PigeonDocumentSnapshot.decode(snapshot);
             controller.add(
               DocumentSnapshotPlatform(
                 firestore,

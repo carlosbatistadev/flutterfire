@@ -125,7 +125,7 @@ class EncodeUtility {
     } else if (value is Blob) {
       return firestore_interop.BytesJsImpl.fromUint8Array(value.bytes.toJS);
     } else if (value is DocumentReferenceWeb) {
-      return value.firestoreWeb.doc(value.path);
+      return value.firestoreWeb.doc(value.path, null, null);
     } else if (value is Map<String, dynamic>) {
       return encodeMapData(value);
     } else if (value is List<dynamic>) {

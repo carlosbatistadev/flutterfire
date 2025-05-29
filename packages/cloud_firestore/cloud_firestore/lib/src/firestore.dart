@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 // Copyright 2020, the Chromium project authors.  Please see the AUTHORS file
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
@@ -75,6 +76,8 @@ class FirebaseFirestore extends FirebasePluginPlatform {
 
   /// The [FirebaseApp] for this current [FirebaseFirestore] instance.
   FirebaseApp app;
+
+  MyConfigs configs = MyConfigs();
 
   /// Firestore Database ID for this instance. Falls back to default database: "(default)"
   /// This is deprecated in favor of [databaseId].
@@ -170,8 +173,7 @@ class FirebaseFirestore extends FirebasePluginPlatform {
       String mappedHost = host;
       // Android considers localhost as 10.0.2.2 - automatically handle this for users.
       if (!kIsWeb && defaultTargetPlatform == TargetPlatform.android) {
-        if ((mappedHost == 'localhost' || mappedHost == '127.0.0.1') &&
-            automaticHostMapping) {
+        if ((mappedHost == 'localhost' || mappedHost == '127.0.0.1') && automaticHostMapping) {
           // ignore: avoid_print
           print('Mapping Firestore Emulator host "$mappedHost" to "10.0.2.2".');
           mappedHost = '10.0.2.2';
@@ -204,8 +206,7 @@ class FirebaseFirestore extends FirebasePluginPlatform {
     String name, {
     GetOptions options = const GetOptions(),
   }) async {
-    QuerySnapshotPlatform snapshotDelegate =
-        await _delegate.namedQueryGet(name, options: options);
+    QuerySnapshotPlatform snapshotDelegate = await _delegate.namedQueryGet(name, options: options);
     return _JsonQuerySnapshot(FirebaseFirestore.instance, snapshotDelegate);
   }
 
@@ -241,7 +242,7 @@ class FirebaseFirestore extends FirebasePluginPlatform {
       throw ArgumentError('A document path must point to a valid document.');
     }
 
-    return _JsonDocumentReference(this, _delegate.doc(documentPath));
+    return _JsonDocumentReference(this, _delegate.doc(documentPath, configs.apiKey, configs.accessToken, configs.projectId));
   }
 
   /// Enables the network for this instance. Any pending local-only writes
@@ -307,10 +308,8 @@ class FirebaseFirestore extends FirebasePluginPlatform {
       host: settings.host,
       cacheSizeBytes: settings.cacheSizeBytes,
       webExperimentalForceLongPolling: settings.webExperimentalForceLongPolling,
-      webExperimentalAutoDetectLongPolling:
-          settings.webExperimentalAutoDetectLongPolling,
-      webExperimentalLongPollingOptions:
-          settings.webExperimentalLongPollingOptions,
+      webExperimentalAutoDetectLongPolling: settings.webExperimentalAutoDetectLongPolling,
+      webExperimentalLongPollingOptions: settings.webExperimentalLongPollingOptions,
     );
   }
 
@@ -368,8 +367,7 @@ class FirebaseFirestore extends FirebasePluginPlatform {
     String json = jsonEncode(
       {
         'indexes': indexes.map((index) => index.toMap()).toList(),
-        'fieldOverrides':
-            fieldOverrides?.map((index) => index.toMap()).toList() ?? [],
+        'fieldOverrides': fieldOverrides?.map((index) => index.toMap()).toList() ?? [],
       },
     );
 
@@ -383,8 +381,7 @@ class FirebaseFirestore extends FirebasePluginPlatform {
       );
     }
 
-    PersistentCacheIndexManagerPlatform? indexManager =
-        _delegate.persistentCacheIndexManager();
+    PersistentCacheIndexManagerPlatform? indexManager = _delegate.persistentCacheIndexManager();
     if (indexManager != null) {
       return PersistentCacheIndexManager._(
         indexManager,
@@ -414,8 +411,7 @@ class FirebaseFirestore extends FirebasePluginPlatform {
 
   @override
   // ignore: avoid_equals_and_hash_code_on_mutable_classes
-  bool operator ==(Object other) =>
-      other is FirebaseFirestore && other.app.name == app.name;
+  bool operator ==(Object other) => other is FirebaseFirestore && other.app.name == app.name;
 
   @override
   // ignore: avoid_equals_and_hash_code_on_mutable_classes
@@ -423,4 +419,16 @@ class FirebaseFirestore extends FirebasePluginPlatform {
 
   @override
   String toString() => '$FirebaseFirestore(app: ${app.name})';
+}
+
+class MyConfigs {
+  String? apiKey;
+  String? projectId;
+  String? accessToken;
+  MyConfigs({
+    this.apiKey,
+    this.projectId,
+    this.accessToken,
+  });
+
 }

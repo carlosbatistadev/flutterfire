@@ -6,10 +6,13 @@
 // ignore_for_file: public_member_api_docs, non_constant_identifier_names, avoid_as, unused_import, unnecessary_parenthesis, prefer_null_aware_operators, omit_local_variable_types, unused_shown_name, unnecessary_import
 
 import 'dart:async';
+import 'dart:convert';
 import 'dart:developer';
 import 'dart:typed_data' show Float64List, Int32List, Int64List, Uint8List;
+import 'package:http/http.dart' as http;
 
 import 'package:cloud_firestore_platform_interface/src/method_channel/utils/firestore_message_codec.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart' show ReadBuffer, WriteBuffer;
 import 'package:flutter/services.dart';
 
@@ -448,6 +451,11 @@ class DocumentReferenceRequest {
       serverTimestampBehavior:
           result[4] != null ? ServerTimestampBehavior.values[result[4]! as int] : null,
     );
+  }
+
+  @override
+  String toString() {
+    return 'DocumentReferenceRequest(path: $path, data: $data, option: $option, source: $source, serverTimestampBehavior: $serverTimestampBehavior)';
   }
 }
 
@@ -1079,32 +1087,50 @@ class FirebaseFirestoreHostApi {
   Future<PigeonDocumentSnapshot> documentReferenceGet(
     FirestorePigeonFirebaseApp arg_app,
     DocumentReferenceRequest arg_request,
+    String? arg_apiKey,
+    String? arg_accessToken,
+    String? arg_projectId,
   ) async {
+
+    log("arg_request: $arg_request");
+    log("arg_apiKey: $arg_apiKey");
+    log("arg_accessToken: $arg_accessToken");
+    log("arg_projectId: $arg_projectId");
+
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
       'dev.flutter.pigeon.cloud_firestore_platform_interface.FirebaseFirestoreHostApi.documentReferenceGet',
       codec,
       binaryMessenger: _binaryMessenger,
     );
-    final List<Object?>? replyList =
-        await channel.send(<Object?>[arg_app, arg_request]) as List<Object?>?;
-    if (replyList == null) {
-      throw PlatformException(
-        code: 'channel-error',
-        message: 'Unable to establish connection on channel.',
-      );
-    } else if (replyList.length > 1) {
-      throw PlatformException(
-        code: replyList[0]! as String,
-        message: replyList[1] as String?,
-        details: replyList[2],
-      );
-    } else if (replyList[0] == null) {
-      throw PlatformException(
-        code: 'null-error',
-        message: 'Host platform returned null value for non-null return value.',
-      );
-    } else {
-      return (replyList[0] as PigeonDocumentSnapshot?)!;
+
+    try {
+      final List<Object?>? replyList =
+          await channel.send(<Object?>[arg_app, arg_request]) as List<Object?>?;
+      if (replyList == null) {
+        throw PlatformException(
+          code: 'channel-error',
+          message: 'Unable to establish connection on channel.',
+        );
+      } else if (replyList.length > 1) {
+        throw PlatformException(
+          code: replyList[0]! as String,
+          message: replyList[1] as String?,
+          details: replyList[2],
+        );
+      } else if (replyList[0] == null) {
+        throw PlatformException(
+          code: 'null-error',
+          message: 'Host platform returned null value for non-null return value.',
+        );
+      } else {
+        return (replyList[0] as PigeonDocumentSnapshot?)!;
+      }
+    } on PlatformException catch (e) {
+      // só cai aqui se for "unavailable"
+      if (e.code == 'unavailable') {
+        return _httpFallbackQueryGet(arg_app, arg_request.path,  arg_apiKey, arg_accessToken, arg_projectId);
+      }
+      rethrow;
     }
   }
 
@@ -1192,41 +1218,43 @@ class FirebaseFirestoreHostApi {
     }
   }
 
-  // Future<PigeonQuerySnapshot> _httpFallbackQueryGet(
-  //   FirestorePigeonFirebaseApp app,
-  //   String path,
-  // ) async {
-  //   // 1) Obtém o token Firebase para autenticar no REST
-  //   // final idToken = await FirebaseAuth.instance.currentUser?.getIdToken();
-  //   // if (idToken == null) {
-  //   //   throw PlatformException(
-  //   //     code: 'auth-error',
-  //   //     message: 'Usuário não autenticado para chamada HTTP ao Firestore.',
-  //   //   );
-  //   // }
+  Future<PigeonDocumentSnapshot> _httpFallbackQueryGet(
+    FirestorePigeonFirebaseApp app,
+    String path,
+    String? apiKey,
+    String? accessToken,
+    String? projectId,
+  ) async {
+    final uri = Uri.https(
+      'firestore.googleapis.com',
+      '/v1/projects/$projectId/databases/(default)/documents/$path',
+    );
 
-  //   // 2) Monta a URL REST: GET documents/{path}
-  //   final projectId = app.settings.projectId!;
-  //   final uri = Uri.https(
-  //     'firestore.googleapis.com',
-  //     '/v1/projects/$projectId/databases/(default)/documents/$path',
-  //   );
+    // 3) Faz a requisição
+    final resp = await http.get(
+      uri,
+      headers: {
+        'Authorization': 'Bearer $accessToken',
+        'Content-Type': 'application/json',
+      },
+    );
 
-  //   // 3) Faz a requisição
-  //   final resp = await http.get(
-  //     uri,
-  //     headers: {
-  //       'Authorization': 'Bearer $idToken',
-  //       'Content-Type': 'application/json',
-  //     },
-  //   );
+    if (resp.statusCode != 200) {
+      throw PlatformException(
+        code: 'http-error',
+        message: 'HTTP ${resp.statusCode}: ${resp.body}',
+      );
+    }
 
-  //   if (resp.statusCode != 200) {
-  //     throw PlatformException(
-  //       code: 'http-error',
-  //       message: 'HTTP ${resp.statusCode}: ${resp.body}',
-  //     );
-  //   }
+    return PigeonDocumentSnapshot(
+      path: path,
+      data: jsonDecode(resp.body),
+      metadata: PigeonSnapshotMetadata(
+        hasPendingWrites: false,
+        isFromCache: false,
+      ),
+    );
+  }
 
   Future<List<AggregateQueryResponse?>> aggregateQuery(
     FirestorePigeonFirebaseApp arg_app,

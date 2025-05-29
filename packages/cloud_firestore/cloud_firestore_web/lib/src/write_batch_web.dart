@@ -27,13 +27,13 @@ class WriteBatchWeb extends WriteBatchPlatform {
 
   @override
   void delete(String documentPath) {
-    _webWriteBatchDelegate.delete(_webFirestoreDelegate.doc(documentPath));
+    _webWriteBatchDelegate.delete(_webFirestoreDelegate.doc(documentPath, null, null));
   }
 
   @override
   void set(String documentPath, Map<String, dynamic> data,
       [SetOptions? options]) {
-    _webWriteBatchDelegate.set(_webFirestoreDelegate.doc(documentPath),
+    _webWriteBatchDelegate.set(_webFirestoreDelegate.doc(documentPath, null, null),
         EncodeUtility.encodeMapData(data)!, convertSetOptions(options));
   }
 
@@ -42,7 +42,7 @@ class WriteBatchWeb extends WriteBatchPlatform {
     String documentPath,
     Map<String, dynamic> data,
   ) {
-    _webWriteBatchDelegate.update(_webFirestoreDelegate.doc(documentPath),
+    _webWriteBatchDelegate.update(_webFirestoreDelegate.doc(documentPath, null, null),
         EncodeUtility.encodeMapData(data)!);
   }
 }
