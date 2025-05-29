@@ -17,10 +17,22 @@ environment:
   flutter: '>=3.3.0'
 
 dependencies:
-  firebase_core: ^3.13.1
-  firebase_core_platform_interface: ^5.3.1
-  firebase_messaging_platform_interface: ^4.6.6
-  firebase_messaging_web: ^3.10.6
+  firebase_core:
+    git:
+      url: https://github.com/carlosbatistadev/flutterfire.git
+      path: packages/firebase_core/firebase_core
+  firebase_core_platform_interface:
+    git:
+      url: https://github.com/carlosbatistadev/flutterfire.git
+      path: packages/firebase_core/firebase_core_platform_interface
+  firebase_messaging_platform_interface:
+    git:
+      url: https://github.com/carlosbatistadev/flutterfire.git
+      path: packages/firebase_messaging/firebase_messaging_platform_interface
+  firebase_messaging_web:
+    git:
+      url: https://github.com/carlosbatistadev/flutterfire.git
+      path: packages/firebase_messaging/firebase_messaging_web
   flutter:
     sdk: flutter
   meta: ^1.8.0
