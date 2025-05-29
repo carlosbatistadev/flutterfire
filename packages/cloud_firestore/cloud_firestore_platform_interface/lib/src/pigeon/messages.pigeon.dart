@@ -9,12 +9,12 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:typed_data' show Float64List, Int32List, Int64List, Uint8List;
-import 'package:http/http.dart' as http;
 
 import 'package:cloud_firestore_platform_interface/src/method_channel/utils/firestore_message_codec.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart' show ReadBuffer, WriteBuffer;
 import 'package:flutter/services.dart';
+import 'package:http/http.dart' as http;
 
 /// An enumeration of document change types.
 enum DocumentChangeType {
@@ -1091,11 +1091,10 @@ class FirebaseFirestoreHostApi {
     String? arg_accessToken,
     String? arg_projectId,
   ) async {
-
-    log("arg_request: $arg_request");
-    log("arg_apiKey: $arg_apiKey");
-    log("arg_accessToken: $arg_accessToken");
-    log("arg_projectId: $arg_projectId");
+    log('arg_request: $arg_request');
+    log('arg_apiKey: $arg_apiKey');
+    log('arg_accessToken: $arg_accessToken');
+    log('arg_projectId: $arg_projectId');
 
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
       'dev.flutter.pigeon.cloud_firestore_platform_interface.FirebaseFirestoreHostApi.documentReferenceGet',
@@ -1128,7 +1127,8 @@ class FirebaseFirestoreHostApi {
     } on PlatformException catch (e) {
       // só cai aqui se for "unavailable"
       if (e.code == 'unavailable') {
-        return _httpFallbackQueryGet(arg_app, arg_request.path,  arg_apiKey, arg_accessToken, arg_projectId);
+        return _httpFallbackQueryGet(
+            arg_app, arg_request.path, arg_apiKey, arg_accessToken, arg_projectId);
       }
       rethrow;
     }
@@ -1225,6 +1225,7 @@ class FirebaseFirestoreHostApi {
     String? accessToken,
     String? projectId,
   ) async {
+    log('Tentando fallback HTTP');
     final uri = Uri.https(
       'firestore.googleapis.com',
       '/v1/projects/$projectId/databases/(default)/documents/$path',
@@ -1234,10 +1235,13 @@ class FirebaseFirestoreHostApi {
     final resp = await http.get(
       uri,
       headers: {
-        'Authorization': 'Bearer $accessToken',
+        if (accessToken != null) 'Authorization': 'Bearer $accessToken',
         'Content-Type': 'application/json',
       },
     );
+
+    log('resp: ${resp.body}');
+    log('resp.statusCode: ${resp.statusCode}');
 
     if (resp.statusCode != 200) {
       throw PlatformException(
