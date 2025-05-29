@@ -6,6 +6,7 @@
 // ignore_for_file: public_member_api_docs, non_constant_identifier_names, avoid_as, unused_import, unnecessary_parenthesis, prefer_null_aware_operators, omit_local_variable_types, unused_shown_name, unnecessary_import
 
 import 'dart:async';
+import 'dart:developer';
 import 'dart:typed_data' show Float64List, Int32List, Int64List, Uint8List;
 
 import 'package:cloud_firestore_platform_interface/src/method_channel/utils/firestore_message_codec.dart';
@@ -143,6 +144,11 @@ class PigeonFirebaseSettings {
       ignoreUndefinedProperties: result[4]! as bool,
     );
   }
+
+  @override
+  String toString() {
+    return 'PigeonFirebaseSettings(persistenceEnabled: $persistenceEnabled, host: $host, sslEnabled: $sslEnabled, cacheSizeBytes: $cacheSizeBytes, ignoreUndefinedProperties: $ignoreUndefinedProperties)';
+  }
 }
 
 class FirestorePigeonFirebaseApp {
@@ -174,6 +180,11 @@ class FirestorePigeonFirebaseApp {
       databaseURL: result[2]! as String,
     );
   }
+
+  @override
+  String toString() {
+    return 'FirestorePigeonFirebaseApp(appName: $appName, settings: $settings, databaseURL: $databaseURL)';
+  }
 }
 
 class PigeonSnapshotMetadata {
@@ -199,6 +210,11 @@ class PigeonSnapshotMetadata {
       hasPendingWrites: result[0]! as bool,
       isFromCache: result[1]! as bool,
     );
+  }
+
+  @override
+  String toString() {
+    return 'PigeonSnapshotMetadata(hasPendingWrites: $hasPendingWrites, isFromCache: $isFromCache)';
   }
 }
 
@@ -230,6 +246,11 @@ class PigeonDocumentSnapshot {
       data: (result[1] as Map<Object?, Object?>?)?.cast<String?, Object?>(),
       metadata: PigeonSnapshotMetadata.decode(result[2]! as List<Object?>),
     );
+  }
+
+  @override
+  String toString() {
+    return 'PigeonDocumentSnapshot(path: $path, data: $data, metadata: $metadata)';
   }
 }
 
@@ -294,8 +315,7 @@ class PigeonQuerySnapshot {
     result as List<Object?>;
     return PigeonQuerySnapshot(
       documents: (result[0] as List<Object?>?)!.cast<PigeonDocumentSnapshot?>(),
-      documentChanges:
-          (result[1] as List<Object?>?)!.cast<PigeonDocumentChange?>(),
+      documentChanges: (result[1] as List<Object?>?)!.cast<PigeonDocumentChange?>(),
       metadata: PigeonSnapshotMetadata.decode(result[2]! as List<Object?>),
     );
   }
@@ -322,8 +342,7 @@ class PigeonGetOptions {
     result as List<Object?>;
     return PigeonGetOptions(
       source: Source.values[result[0]! as int],
-      serverTimestampBehavior:
-          ServerTimestampBehavior.values[result[1]! as int],
+      serverTimestampBehavior: ServerTimestampBehavior.values[result[1]! as int],
     );
   }
 }
@@ -385,9 +404,7 @@ class PigeonTransactionCommand {
       type: PigeonTransactionType.values[result[0]! as int],
       path: result[1]! as String,
       data: (result[2] as Map<Object?, Object?>?)?.cast<String?, Object?>(),
-      option: result[3] != null
-          ? PigeonDocumentOption.decode(result[3]! as List<Object?>)
-          : null,
+      option: result[3] != null ? PigeonDocumentOption.decode(result[3]! as List<Object?>) : null,
     );
   }
 }
@@ -426,13 +443,10 @@ class DocumentReferenceRequest {
     return DocumentReferenceRequest(
       path: result[0]! as String,
       data: (result[1] as Map<Object?, Object?>?)?.cast<Object?, Object?>(),
-      option: result[2] != null
-          ? PigeonDocumentOption.decode(result[2]! as List<Object?>)
-          : null,
+      option: result[2] != null ? PigeonDocumentOption.decode(result[2]! as List<Object?>) : null,
       source: result[3] != null ? Source.values[result[3]! as int] : null,
-      serverTimestampBehavior: result[4] != null
-          ? ServerTimestampBehavior.values[result[4]! as int]
-          : null,
+      serverTimestampBehavior:
+          result[4] != null ? ServerTimestampBehavior.values[result[4]! as int] : null,
     );
   }
 }
@@ -495,6 +509,11 @@ class PigeonQueryParameters {
       endBefore: (result[7] as List<Object?>?)?.cast<Object?>(),
       filters: (result[8] as Map<Object?, Object?>?)?.cast<String?, Object?>(),
     );
+  }
+
+  @override
+  String toString() {
+    return 'PigeonQueryParameters(where: $where, orderBy: $orderBy, limit: $limit, limitToLast: $limitToLast, startAt: $startAt, startAfter: $startAfter, endAt: $endAt, endBefore: $endBefore, filters: $filters)';
   }
 }
 
@@ -642,8 +661,7 @@ class FirebaseFirestoreHostApi {
   /// Constructor for [FirebaseFirestoreHostApi].  The [binaryMessenger] named argument is
   /// available for dependency injection.  If it is left null, the default
   /// BinaryMessenger will be used which routes to the host platform.
-  FirebaseFirestoreHostApi({BinaryMessenger? binaryMessenger})
-      : _binaryMessenger = binaryMessenger;
+  FirebaseFirestoreHostApi({BinaryMessenger? binaryMessenger}) : _binaryMessenger = binaryMessenger;
   final BinaryMessenger? _binaryMessenger;
 
   static const MessageCodec<Object?> codec = _FirebaseFirestoreHostApiCodec();
@@ -690,8 +708,8 @@ class FirebaseFirestoreHostApi {
       codec,
       binaryMessenger: _binaryMessenger,
     );
-    final List<Object?>? replyList = await channel
-        .send(<Object?>[arg_app, arg_name, arg_options]) as List<Object?>?;
+    final List<Object?>? replyList =
+        await channel.send(<Object?>[arg_app, arg_name, arg_options]) as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',
@@ -719,8 +737,7 @@ class FirebaseFirestoreHostApi {
       codec,
       binaryMessenger: _binaryMessenger,
     );
-    final List<Object?>? replyList =
-        await channel.send(<Object?>[arg_app]) as List<Object?>?;
+    final List<Object?>? replyList = await channel.send(<Object?>[arg_app]) as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',
@@ -743,8 +760,7 @@ class FirebaseFirestoreHostApi {
       codec,
       binaryMessenger: _binaryMessenger,
     );
-    final List<Object?>? replyList =
-        await channel.send(<Object?>[arg_app]) as List<Object?>?;
+    final List<Object?>? replyList = await channel.send(<Object?>[arg_app]) as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',
@@ -767,8 +783,7 @@ class FirebaseFirestoreHostApi {
       codec,
       binaryMessenger: _binaryMessenger,
     );
-    final List<Object?>? replyList =
-        await channel.send(<Object?>[arg_app]) as List<Object?>?;
+    final List<Object?>? replyList = await channel.send(<Object?>[arg_app]) as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',
@@ -791,8 +806,7 @@ class FirebaseFirestoreHostApi {
       codec,
       binaryMessenger: _binaryMessenger,
     );
-    final List<Object?>? replyList =
-        await channel.send(<Object?>[arg_app]) as List<Object?>?;
+    final List<Object?>? replyList = await channel.send(<Object?>[arg_app]) as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',
@@ -815,8 +829,7 @@ class FirebaseFirestoreHostApi {
       codec,
       binaryMessenger: _binaryMessenger,
     );
-    final List<Object?>? replyList =
-        await channel.send(<Object?>[arg_app]) as List<Object?>?;
+    final List<Object?>? replyList = await channel.send(<Object?>[arg_app]) as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',
@@ -842,8 +855,8 @@ class FirebaseFirestoreHostApi {
       codec,
       binaryMessenger: _binaryMessenger,
     );
-    final List<Object?>? replyList = await channel
-        .send(<Object?>[arg_app, arg_indexConfiguration]) as List<Object?>?;
+    final List<Object?>? replyList =
+        await channel.send(<Object?>[arg_app, arg_indexConfiguration]) as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',
@@ -892,8 +905,7 @@ class FirebaseFirestoreHostApi {
       codec,
       binaryMessenger: _binaryMessenger,
     );
-    final List<Object?>? replyList =
-        await channel.send(<Object?>[arg_app]) as List<Object?>?;
+    final List<Object?>? replyList = await channel.send(<Object?>[arg_app]) as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',
@@ -926,8 +938,7 @@ class FirebaseFirestoreHostApi {
       binaryMessenger: _binaryMessenger,
     );
     final List<Object?>? replyList =
-        await channel.send(<Object?>[arg_app, arg_timeout, arg_maxAttempts])
-            as List<Object?>?;
+        await channel.send(<Object?>[arg_app, arg_timeout, arg_maxAttempts]) as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',
@@ -989,8 +1000,7 @@ class FirebaseFirestoreHostApi {
       binaryMessenger: _binaryMessenger,
     );
     final List<Object?>? replyList =
-        await channel.send(<Object?>[arg_app, arg_transactionId, arg_path])
-            as List<Object?>?;
+        await channel.send(<Object?>[arg_app, arg_transactionId, arg_path]) as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',
@@ -1132,38 +1142,91 @@ class FirebaseFirestoreHostApi {
     PigeonQueryParameters arg_parameters,
     PigeonGetOptions arg_options,
   ) async {
+    log('arg_app: $arg_app');
+
+    log('arg_path: $arg_path');
+    log('arg_isCollectionGroup: $arg_isCollectionGroup');
+    log('arg_parameters: $arg_parameters');
+    log('arg_options: $arg_options');
+
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
       'dev.flutter.pigeon.cloud_firestore_platform_interface.FirebaseFirestoreHostApi.queryGet',
       codec,
       binaryMessenger: _binaryMessenger,
     );
-    final List<Object?>? replyList = await channel.send(<Object?>[
-      arg_app,
-      arg_path,
-      arg_isCollectionGroup,
-      arg_parameters,
-      arg_options,
-    ]) as List<Object?>?;
-    if (replyList == null) {
-      throw PlatformException(
-        code: 'channel-error',
-        message: 'Unable to establish connection on channel.',
-      );
-    } else if (replyList.length > 1) {
-      throw PlatformException(
-        code: replyList[0]! as String,
-        message: replyList[1] as String?,
-        details: replyList[2],
-      );
-    } else if (replyList[0] == null) {
-      throw PlatformException(
-        code: 'null-error',
-        message: 'Host platform returned null value for non-null return value.',
-      );
-    } else {
-      return (replyList[0] as PigeonQuerySnapshot?)!;
+
+    try {
+      final List<Object?>? replyList = await channel.send(<Object?>[
+        arg_app,
+        arg_path,
+        arg_isCollectionGroup,
+        arg_parameters,
+        arg_options,
+      ]) as List<Object?>?;
+
+      if (replyList == null) {
+        throw PlatformException(
+          code: 'channel-error',
+          message: 'Unable to establish connection on channel.',
+        );
+      } else if (replyList.length > 1) {
+        throw PlatformException(
+          code: replyList[0]! as String,
+          message: replyList[1] as String?,
+          details: replyList[2],
+        );
+      } else if (replyList[0] == null) {
+        throw PlatformException(
+          code: 'null-error',
+          message: 'Host platform returned null value for non-null return value.',
+        );
+      } else {
+        return (replyList[0] as PigeonQuerySnapshot?)!;
+      }
+    } on PlatformException catch (e) {
+      // só cai aqui se for "unavailable"
+      if (e.code == 'unavailable') {
+        // return _httpFallbackQueryGet(arg_app, arg_path);
+      }
+      rethrow;
     }
   }
+
+  // Future<PigeonQuerySnapshot> _httpFallbackQueryGet(
+  //   FirestorePigeonFirebaseApp app,
+  //   String path,
+  // ) async {
+  //   // 1) Obtém o token Firebase para autenticar no REST
+  //   // final idToken = await FirebaseAuth.instance.currentUser?.getIdToken();
+  //   // if (idToken == null) {
+  //   //   throw PlatformException(
+  //   //     code: 'auth-error',
+  //   //     message: 'Usuário não autenticado para chamada HTTP ao Firestore.',
+  //   //   );
+  //   // }
+
+  //   // 2) Monta a URL REST: GET documents/{path}
+  //   final projectId = app.settings.projectId!;
+  //   final uri = Uri.https(
+  //     'firestore.googleapis.com',
+  //     '/v1/projects/$projectId/databases/(default)/documents/$path',
+  //   );
+
+  //   // 3) Faz a requisição
+  //   final resp = await http.get(
+  //     uri,
+  //     headers: {
+  //       'Authorization': 'Bearer $idToken',
+  //       'Content-Type': 'application/json',
+  //     },
+  //   );
+
+  //   if (resp.statusCode != 200) {
+  //     throw PlatformException(
+  //       code: 'http-error',
+  //       message: 'HTTP ${resp.statusCode}: ${resp.body}',
+  //     );
+  //   }
 
   Future<List<AggregateQueryResponse?>> aggregateQuery(
     FirestorePigeonFirebaseApp arg_app,
@@ -1325,8 +1388,8 @@ class FirebaseFirestoreHostApi {
       codec,
       binaryMessenger: _binaryMessenger,
     );
-    final List<Object?>? replyList = await channel
-        .send(<Object?>[arg_app, arg_request.index]) as List<Object?>?;
+    final List<Object?>? replyList =
+        await channel.send(<Object?>[arg_app, arg_request.index]) as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',
